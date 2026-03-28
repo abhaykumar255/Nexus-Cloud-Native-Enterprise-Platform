@@ -24,32 +24,49 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: nexus-frontend-application/package-lock.json
 
       - name: Install dependencies
         working-directory: nexus-frontend-application
         run: |
-          if [ -f package-lock.json ]; then
+          if [ -f yarn.lock ]; then
+            echo "📦 Using Yarn..."
+            yarn install --frozen-lockfile
+          elif [ -f package-lock.json ]; then
+            echo "📦 Using npm..."
             npm ci
           else
-            echo "Frontend not yet initialized. Skipping..."
+            echo "⚠️ No lock file found. Frontend not yet initialized. Skipping..."
             exit 0
           fi
 
       - name: ESLint
         working-directory: nexus-frontend-application
-        run: npm run lint || echo "Lint not configured"
+        run: |
+          if [ -f yarn.lock ]; then
+            yarn lint || echo "Lint not configured"
+          else
+            npm run lint || echo "Lint not configured"
+          fi
         continue-on-error: true
 
       - name: Prettier Check
         working-directory: nexus-frontend-application
-        run: npm run format:check || echo "Prettier not configured"
+        run: |
+          if [ -f yarn.lock ]; then
+            yarn format:check || echo "Prettier not configured"
+          else
+            npm run format:check || echo "Prettier not configured"
+          fi
         continue-on-error: true
 
       - name: TypeScript Check
         working-directory: nexus-frontend-application
-        run: npm run type-check || npx tsc --noEmit || echo "TypeScript not configured"
+        run: |
+          if [ -f yarn.lock ]; then
+            yarn type-check || npx tsc --noEmit || echo "TypeScript not configured"
+          else
+            npm run type-check || npx tsc --noEmit || echo "TypeScript not configured"
+          fi
         continue-on-error: true
 
   unit-tests:
@@ -64,13 +81,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: nexus-frontend-application/package-lock.json
 
       - name: Install dependencies
         working-directory: nexus-frontend-application
         run: |
-          if [ -f package-lock.json ]; then
+          if [ -f yarn.lock ]; then
+            echo "📦 Using Yarn..."
+            yarn install --frozen-lockfile
+          elif [ -f package-lock.json ]; then
+            echo "📦 Using npm..."
             npm ci
           else
             exit 0
@@ -78,7 +97,12 @@ jobs:
 
       - name: Run Unit Tests
         working-directory: nexus-frontend-application
-        run: npm run test:coverage || npm test || echo "Tests not configured"
+        run: |
+          if [ -f yarn.lock ]; then
+            yarn test:coverage || yarn test || echo "Tests not configured"
+          else
+            npm run test:coverage || npm test || echo "Tests not configured"
+          fi
         continue-on-error: true
 
       - name: Upload Coverage
@@ -101,13 +125,15 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: nexus-frontend-application/package-lock.json
 
       - name: Install dependencies
         working-directory: nexus-frontend-application
         run: |
-          if [ -f package-lock.json ]; then
+          if [ -f yarn.lock ]; then
+            echo "📦 Using Yarn..."
+            yarn install --frozen-lockfile
+          elif [ -f package-lock.json ]; then
+            echo "📦 Using npm..."
             npm ci
           else
             exit 0
@@ -115,7 +141,12 @@ jobs:
 
       - name: Build Production
         working-directory: nexus-frontend-application
-        run: npm run build || echo "Build not configured"
+        run: |
+          if [ -f yarn.lock ]; then
+            yarn build || echo "Build not configured"
+          else
+            npm run build || echo "Build not configured"
+          fi
 
       - name: Analyze Bundle Size
         working-directory: nexus-frontend-application
