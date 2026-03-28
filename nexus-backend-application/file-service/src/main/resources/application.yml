@@ -1,0 +1,80 @@
+spring:
+  application:
+    name: file-service
+  config:
+    import: "optional:configserver:http://localhost:8888"
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/file_db
+      auto-index-creation: true
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 100MB
+      max-request-size: 100MB
+      file-size-threshold: 1MB
+  kafka:
+    bootstrap-servers: localhost:9092
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    consumer:
+      group-id: file-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+server:
+  port: 8085
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.value}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+# File Service Specific Configuration
+file:
+  storage:
+    type: local # local, s3
+    base-path: ./file-storage
+  upload:
+    allowed-extensions:
+      - pdf
+      - doc
+      - docx
+      - xls
+      - xlsx
+      - txt
+      - jpg
+      - jpeg
+      - png
+      - gif
+      - zip
+    max-size-mb: 100
+  sftp:
+    enabled: true
+    port: 2222
+    host-key-path: ./sftp/hostkey.ser
+    upload-path: ./sftp-uploads
+
+# File Service Configuration
+file-service:
+  storage:
+    default-storage-type: LOCAL
+  url:
+    download-url-prefix: /api/v1/files/download/
