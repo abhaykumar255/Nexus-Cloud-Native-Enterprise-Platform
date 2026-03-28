@@ -55,18 +55,13 @@ jobs:
             ${{ runner.os }}-maven-backend-
             ${{ runner.os }}-maven-
 
-      - name: Build common-lib first
-        if: matrix.service != 'common-lib'
-        working-directory: nexus-backend-application
-        run: mvn clean install -pl common-lib -DskipTests
-
       - name: Full Build with Tests
         working-directory: nexus-backend-application
-        run: mvn clean install -pl ${{ matrix.service }}
+        run: mvn clean install -pl ${{ matrix.service }} -am
 
       - name: Generate Coverage Report
         working-directory: nexus-backend-application
-        run: mvn jacoco:report -pl ${{ matrix.service }}
+        run: mvn jacoco:report -pl ${{ matrix.service }} -am
 
       - name: Upload Coverage
         uses: actions/upload-artifact@v4
