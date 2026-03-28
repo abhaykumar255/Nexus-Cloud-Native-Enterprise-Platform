@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: seller-service
+  
+  datasource:
+    url: jdbc:postgresql://localhost:5432/nexus_sellers
+    username: postgres
+    password: postgres
+    driver-class-name: org.postgresql.Driver
+  
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        dialect: org.hibernate.dialect.PostgreSQLDialect
+  
+  flyway:
+    enabled: true
+    baseline-on-migrate: true
+  
+  kafka:
+    bootstrap-servers: localhost:9092
+  
+  cloud:
+    config:
+      enabled: false
+
+server:
+  port: 8085
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+
+logging:
+  level:
+    com.nexus.seller: DEBUG
+
