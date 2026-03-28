@@ -24,3 +24,11 @@ hs_err_pid*
 replay_pid*
 
 **/docs/
+**/target/
+**/.idea/
+**/.vscode/
+
+.idea/
+.vscode/
+/nexus-frontend-application/node_modules/
+/nexus-backend-application/.idea/
