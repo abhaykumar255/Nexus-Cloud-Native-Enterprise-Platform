@@ -65,18 +65,13 @@ jobs:
           distribution: 'temurin'
           cache: 'maven'
 
-      - name: Build common-lib
-        if: matrix.service != 'common-lib'
-        working-directory: nexus-backend-application
-        run: mvn clean install -pl common-lib -DskipTests
-
       - name: Build Service
         working-directory: nexus-backend-application
         run: |
           if [ "${{ github.event.inputs.skip_tests }}" == "true" ]; then
-            mvn clean install -pl ${{ matrix.service }} -DskipTests
+            mvn clean install -pl ${{ matrix.service }} -am -DskipTests
           else
-            mvn clean install -pl ${{ matrix.service }}
+            mvn clean install -pl ${{ matrix.service }} -am
           fi
 
       - name: Build Production Docker Image
