@@ -30,3 +30,4 @@ replay_pid*
 
 .idea/
 .vscode/
+/nexus-frontend-application/node_modules/
