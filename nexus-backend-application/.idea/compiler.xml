@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <annotationProcessing>
+      <profile name="Annotation profile for NEXUS Cloud-Native Enterprise Platform" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.32/lombok-1.18.32.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.32/lombok-1.18.32.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/mapstruct/mapstruct-processor/1.5.5.Final/mapstruct-processor-1.5.5.Final.jar" />
+        </processorPath>
+        <module name="external-integration-service" />
+        <module name="common-lib" />
+        <module name="user-service" />
+        <module name="file-service" />
+        <module name="ai-service" />
+        <module name="discovery-service" />
+        <module name="notification-service" />
+        <module name="config-server" />
+        <module name="auth-service" />
+        <module name="search-service" />
+        <module name="api-gateway" />
+        <module name="task-service" />
+        <module name="workflow-service" />
+      </profile>
+    </annotationProcessing>
+  </component>
+</project>
