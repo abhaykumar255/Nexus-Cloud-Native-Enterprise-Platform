@@ -218,7 +218,7 @@ public class OrderPlacementFlowIT {
                 .statusCode(201)
                 .body("id", notNullValue())
                 .body("orderId", equalTo(orderId))
-                .body("status", in("PENDING", "PROCESSING", "COMPLETED"))
+                .body("status", isOneOf("PENDING", "PROCESSING", "COMPLETED"))
                 .extract()
                 .path("id");
 
@@ -328,7 +328,7 @@ public class OrderPlacementFlowIT {
                 .statusCode(200)
                 .body("content", hasSize(greaterThanOrEqualTo(1)))
                 .body("content[0].id", equalTo(orderId))
-                .body("content[0].status", in("DELIVERED", "IN_TRANSIT", "CONFIRMED"));
+                .body("content[0].status", isOneOf("DELIVERED", "IN_TRANSIT", "CONFIRMED"));
     }
 }
 
