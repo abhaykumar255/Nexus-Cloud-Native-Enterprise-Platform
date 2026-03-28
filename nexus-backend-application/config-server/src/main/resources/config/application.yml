@@ -1,0 +1,76 @@
+# Shared configuration for all NEXUS microservices
+# This configuration is loaded by all services connecting to config-server
+
+# Common Spring configurations
+spring:
+  jackson:
+    default-property-inclusion: non_null
+    serialization:
+      write-dates-as-timestamps: false
+    deserialization:
+      fail-on-unknown-properties: false
+
+# Common actuator configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,refresh
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    tags:
+      application: ${spring.application.name}
+    export:
+      prometheus:
+        enabled: true
+
+# Common logging configuration
+logging:
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
+    file: "%d{yyyy-MM-dd HH:mm:ss} [%X{traceId}/%X{spanId}] %-5level %logger{36} - %msg%n"
+  level:
+    root: INFO
+    com.nexus: DEBUG
+
+# Common Kafka configuration (will be overridden by service-specific configs)
+spring.kafka:
+  bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+  producer:
+    key-serializer: org.apache.kafka.common.serialization.StringSerializer
+    value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    acks: all
+    properties:
+      enable.idempotence: true
+      max.in.flight.requests.per.connection: 5
+  consumer:
+    key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+    auto-offset-reset: earliest
+    enable-auto-commit: false
+    properties:
+      spring.json.trusted.packages: "*"
+
+# Common Redis configuration
+spring.data.redis:
+  host: ${REDIS_HOST:localhost}
+  port: ${REDIS_PORT:6379}
+  password: ${REDIS_PASSWORD:nexus_dev}
+
+# Common distributed tracing configuration
+management.tracing:
+  sampling:
+    probability: ${TRACING_PROBABILITY:1.0}
+
+# Feature flags (can be updated without service restart via /actuator/refresh)
+nexus.features:
+  ai-recommendations: false
+  graphql-api: true
+  bulk-task-import: false
+  elasticsearch-sync: true
+  kafka-exactly-once: true
+  new-task-ui: false
+  websocket-push: true
+

@@ -1,0 +1,171 @@
+server:
+  port: 8089
+
+spring:
+  application:
+    name: ai-service
+
+  # PostgreSQL Configuration (ai_db)
+  datasource:
+    url: jdbc:postgresql://${POSTGRES_HOST:localhost}:5432/ai_db
+    username: ${POSTGRES_USER:postgres}
+    password: ${POSTGRES_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 5
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc:
+          batch_size: 20
+        order_inserts: true
+        order_updates: true
+
+  # MongoDB Configuration (ai_analytics)
+  data:
+    mongodb:
+      host: ${MONGODB_HOST:localhost}
+      port: 27017
+      database: ai_analytics
+      username: ${MONGODB_USER:root}
+      password: ${MONGODB_PASSWORD:example}
+      authentication-database: admin
+      auto-index-creation: true
+
+    # Redis Configuration
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: 6379
+      password: ${REDIS_PASSWORD:}
+      timeout: 60000ms
+      lettuce:
+        pool:
+          max-active: 10
+          max-idle: 5
+          min-idle: 2
+
+  # Kafka Configuration
+  kafka:
+    bootstrap-servers: ${KAFKA_BOOTSTRAP_SERVERS:localhost:9092}
+    consumer:
+      group-id: ai-service-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+
+  # Cache Configuration
+  cache:
+    type: redis
+    redis:
+      time-to-live: 1800000 # 30 minutes in milliseconds
+      cache-null-values: false
+
+# Eureka Client
+eureka:
+  client:
+    service-url:
+      defaultZone: ${EUREKA_SERVER:http://localhost:8761/eureka/}
+    register-with-eureka: true
+    fetch-registry: true
+  instance:
+    prefer-ip-address: true
+    lease-renewal-interval-in-seconds: 10
+    instance-id: ${spring.application.name}:${spring.application.instance_id:${random.value}}
+
+# Actuator Configuration
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,refresh
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+  tracing:
+    sampling:
+      probability: 1.0
+  zipkin:
+    tracing:
+      endpoint: ${ZIPKIN_URL:http://localhost:9411/api/v2/spans}
+
+# Application Configuration
+ai:
+  model:
+    version: "1.3.0"
+  recommendation:
+    cache-ttl-minutes: 30
+    default-limit: 10
+    max-recommendations: 5
+    default-recommendations: 3
+    initial-confidence-score: 0.85
+    confidence-decrement: 0.05
+    default-confidence-score: 0.70
+  anomaly:
+    z-score-threshold: 2.5
+    window-minutes: 5
+    critical-z-score: 3.5
+    metric-thresholds:
+      error_rate_pct: 5.0
+      p99_latency_ms: 2000.0
+      kafka_consumer_lag: 10000.0
+      heap_usage_pct: 80.0
+    z-score-thresholds:
+      error_rate_pct: 2.5
+      p99_latency_ms: 2.5
+      kafka_consumer_lag: 3.0
+      heap_usage_pct: 2.0
+    recommendations:
+      kafka_consumer_lag: "Scale {service} consumers - lag spike detected."
+      error_rate_pct: "Investigate error logs in {service}."
+      p99_latency_ms: "Check database query performance or external API latency."
+      heap_usage_pct: "Possible memory leak - analyze heap dump."
+  prediction:
+    base-estimate-days: 3.0
+    base-confidence: 0.75
+    confidence-boost-for-assignee: 0.05
+    confidence-boost-for-tags: 0.03
+    max-confidence: 0.95
+    auth-task-multiplier: 1.2
+    high-complexity-variance: 30.0
+    auth-underestimation: 20.0
+    complexity-multipliers:
+      LOW: 1.0
+      MEDIUM: 1.5
+      HIGH: 2.5
+    priority-multipliers:
+      LOW: 1.2
+      MEDIUM: 1.0
+      HIGH: 0.9
+    risk-messages:
+      HIGH_COMPLEXITY: "High complexity tasks have {variance}% variance in completion time"
+      AUTH_TAG: "Auth complexity historically underestimated by {underestimation}%"
+      UNASSIGNED: "Unassigned tasks typically take longer to start"
+
+# Logging
+logging:
+  level:
+    com.nexus.ai: DEBUG
+    org.springframework.kafka: INFO
+    org.springframework.data.mongodb: DEBUG
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss} - %logger{36} - %msg trace_id=%X{traceId} span_id=%X{spanId}%n"
+

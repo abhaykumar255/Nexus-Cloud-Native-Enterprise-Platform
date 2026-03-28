@@ -1,0 +1,46 @@
+spring:
+  application:
+    name: search-service
+  config:
+    import: "optional:configserver:http://localhost:8888"
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: search-service-group
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+
+server:
+  port: 8086
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka/
+    fetch-registry: true
+    register-with-eureka: true
+  instance:
+    prefer-ip-address: true
+    instance-id: ${spring.application.name}:${random.value}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+# Elasticsearch Configuration
+elasticsearch:
+  host: localhost
+  port: 9200
+  scheme: http
+  indices:
+    tasks: nexus-tasks
+    users: nexus-users
+    files: nexus-files
+
