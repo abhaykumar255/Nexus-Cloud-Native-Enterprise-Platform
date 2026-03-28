@@ -27,8 +27,21 @@
         <module>external-integration-service</module>
         <module>ai-service</module>
         <module>common-lib</module>
+        <module>product-service</module>
+        <module>inventory-service</module>
+        <module>cart-service</module>
+        <module>order-service</module>
+        <module>payment-service</module>
+        <module>delivery-service</module>
+        <module>tracking-service</module>
+        <module>seller-service</module>
+        <module>restaurant-service</module>
+        <module>coupon-service</module>
+        <module>review-service</module>
+        <module>analytics-service</module>
+        <module>admin-service</module>
+        <module>integration-tests</module>
     </modules>
-
     <properties>
         <java.version>17</java.version>
         <maven.compiler.source>17</maven.compiler.source>

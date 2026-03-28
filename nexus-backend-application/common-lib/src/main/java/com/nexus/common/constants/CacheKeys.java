@@ -35,5 +35,49 @@ public final class CacheKeys {
     
     // Search Service
     public static final String SEARCH_RESULT_PREFIX = "search:result:";
+
+    // E-Commerce: Product Service
+    public static final String PRODUCT_PREFIX = "product:";
+    public static final String PRODUCT_DETAIL_PREFIX = "product:detail:";
+    public static final String PRODUCT_LIST_PREFIX = "product:list:";
+    public static final String PRODUCT_CATEGORY_PREFIX = "product:category:";
+    public static final String PRODUCT_PRICE_HISTORY_PREFIX = "product:price:history:";
+
+    // E-Commerce: Inventory Service
+    public static final String INVENTORY_PREFIX = "inventory:";
+    public static final String INVENTORY_SOFT_RESERVATION_PREFIX = "inventory:soft:";
+    public static final String INVENTORY_LOCK_PREFIX = "inventory:lock:";
+
+    // E-Commerce: Cart Service
+    public static final String CART_PREFIX = "cart:";
+    public static final String CART_TTL_SECONDS = "604800"; // 7 days
+
+    // E-Commerce: Order Service
+    public static final String ORDER_PREFIX = "order:";
+    public static final String ORDER_STATUS_PREFIX = "order:status:";
+
+    // E-Commerce: Restaurant Service
+    public static final String RESTAURANT_PREFIX = "restaurant:";
+    public static final String RESTAURANT_MENU_PREFIX = "restaurant:menu:";
+    public static final String RESTAURANT_STATUS_PREFIX = "restaurant:status:";
+
+    // E-Commerce: Tracking Service
+    public static final String TRACKING_GPS_PREFIX = "tracking:gps:";
+    public static final String TRACKING_ETA_PREFIX = "tracking:eta:";
+
+    // E-Commerce: Seller Service
+    public static final String SELLER_PREFIX = "seller:";
+    public static final String SELLER_PROFILE_PREFIX = "seller:profile:";
+
+    // E-Commerce: Coupon Service
+    public static final String COUPON_PREFIX = "coupon:";
+    public static final String COUPON_USAGE_PREFIX = "coupon:usage:";
+
+    // E-Commerce: Review Service
+    public static final String REVIEW_PREFIX = "review:";
+    public static final String REVIEW_AGGREGATE_PREFIX = "review:aggregate:";
+
+    // Rate Limiting
+    public static final String RATE_LIMIT_PREFIX = "rate:limit:";
 }
 
