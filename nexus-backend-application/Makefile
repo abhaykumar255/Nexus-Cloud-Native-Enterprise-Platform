@@ -41,12 +41,12 @@ test:
 # Start infrastructure services only
 start-infra:
 	@echo "Starting infrastructure services..."
-	docker-compose up -d postgres mongodb redis kafka
+	docker-compose up -d postgres mongodb redis kafka elasticsearch
 
 # Stop infrastructure services
 stop-infra:
 	@echo "Stopping infrastructure services..."
-	docker-compose stop postgres mongodb redis kafka
+	docker-compose stop postgres mongodb redis kafka elasticsearch
 
 # Start all services
 start-all:
@@ -76,4 +76,47 @@ dev: start-infra build
 status:
 	@echo "Service Status:"
 	docker-compose ps
+
+# Build specific service
+build-service:
+	@echo "Building service: $(SERVICE)"
+	mvn clean package -pl $(SERVICE) -am -DskipTests
+
+# Start specific services (analytics and admin)
+start-analytics:
+	@echo "Starting Analytics Service..."
+	docker-compose up -d analytics-service mongodb elasticsearch
+
+start-admin:
+	@echo "Starting Admin Service..."
+	docker-compose up -d admin-service postgres
+
+# View logs for specific service
+logs-service:
+	@echo "Viewing logs for: $(SERVICE)"
+	docker-compose logs -f $(SERVICE)
+
+# Health check all services
+health-check:
+	@echo "Checking health of all services..."
+	@echo "\n=== Infrastructure Services ==="
+	@curl -s http://localhost:8888/actuator/health | jq '.status' || echo "Config Server: DOWN"
+	@curl -s http://localhost:8761/actuator/health | jq '.status' || echo "Discovery Service: DOWN"
+	@curl -s http://localhost:8080/actuator/health | jq '.status' || echo "API Gateway: DOWN"
+	@echo "\n=== Core Services ==="
+	@curl -s http://localhost:8082/actuator/health | jq '.status' || echo "Auth Service: DOWN"
+	@curl -s http://localhost:8081/actuator/health | jq '.status' || echo "User Service: DOWN"
+	@echo "\n=== E-Commerce Services ==="
+	@curl -s http://localhost:8087/actuator/health | jq '.status' || echo "Product Service: DOWN"
+	@curl -s http://localhost:8090/actuator/health | jq '.status' || echo "Order Service: DOWN"
+	@echo "\n=== Analytics & Admin ==="
+	@curl -s http://localhost:8096/actuator/health | jq '.status' || echo "Analytics Service: DOWN"
+	@curl -s http://localhost:8097/actuator/health | jq '.status' || echo "Admin Service: DOWN"
+
+# Count total services
+count:
+	@echo "Total Services Implemented:"
+	@find . -maxdepth 1 -type d -name "*-service" -o -name "*-gateway" -o -name "*-server" | wc -l | xargs echo "Services:"
+	@echo "\nService List:"
+	@ls -1 | grep -E "(service|gateway|server)$$" | sort
 

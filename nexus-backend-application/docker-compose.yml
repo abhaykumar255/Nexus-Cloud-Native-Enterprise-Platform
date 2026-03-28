@@ -381,6 +381,391 @@ services:
     networks:
       - nexus-network
 
+  # ============================================
+  # E-COMMERCE SERVICES
+  # ============================================
+
+  # Product Service
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    container_name: nexus-product-service
+    ports:
+      - "8100:8080"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nexus_products
+      SPRING_DATASOURCE_USERNAME: nexus_user
+      SPRING_DATASOURCE_PASSWORD: nexus_pass
+      SPRING_DATA_MONGODB_URI: mongodb://nexus_user:nexus_pass@mongodb:27017/nexus_products?authSource=admin
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # Inventory Service
+  inventory-service:
+    build:
+      context: ./inventory-service
+      dockerfile: Dockerfile
+    container_name: nexus-inventory-service
+    ports:
+      - "8101:8084"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nexus_inventory
+      SPRING_DATASOURCE_USERNAME: nexus_user
+      SPRING_DATASOURCE_PASSWORD: nexus_pass
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # Cart Service
+  cart-service:
+    build:
+      context: ./cart-service
+      dockerfile: Dockerfile
+    container_name: nexus-cart-service
+    ports:
+      - "8102:8087"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # Order Service
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: nexus-order-service
+    ports:
+      - "8103:8087"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nexus_orders
+      SPRING_DATASOURCE_USERNAME: nexus_user
+      SPRING_DATASOURCE_PASSWORD: nexus_pass
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # Payment Service
+  payment-service:
+    build:
+      context: ./payment-service
+      dockerfile: Dockerfile
+    container_name: nexus-payment-service
+    ports:
+      - "8104:8088"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nexus_payments
+      SPRING_DATASOURCE_USERNAME: nexus_user
+      SPRING_DATASOURCE_PASSWORD: nexus_pass
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # Delivery Service
+  delivery-service:
+    build:
+      context: ./delivery-service
+      dockerfile: Dockerfile
+    container_name: nexus-delivery-service
+    ports:
+      - "8105:8089"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nexus_deliveries
+      SPRING_DATASOURCE_USERNAME: nexus_user
+      SPRING_DATASOURCE_PASSWORD: nexus_pass
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # Tracking Service
+  tracking-service:
+    build:
+      context: ./tracking-service
+      dockerfile: Dockerfile
+    container_name: nexus-tracking-service
+    ports:
+      - "8106:8090"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nexus_tracking
+      SPRING_DATASOURCE_USERNAME: nexus_user
+      SPRING_DATASOURCE_PASSWORD: nexus_pass
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # Seller Service
+  seller-service:
+    build:
+      context: ./seller-service
+      dockerfile: Dockerfile
+    container_name: nexus-seller-service
+    ports:
+      - "8107:8085"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nexus_sellers
+      SPRING_DATASOURCE_USERNAME: nexus_user
+      SPRING_DATASOURCE_PASSWORD: nexus_pass
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # Restaurant Service
+  restaurant-service:
+    build:
+      context: ./restaurant-service
+      dockerfile: Dockerfile
+    container_name: nexus-restaurant-service
+    ports:
+      - "8108:8091"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nexus_restaurants
+      SPRING_DATASOURCE_USERNAME: nexus_user
+      SPRING_DATASOURCE_PASSWORD: nexus_pass
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # Coupon Service
+  coupon-service:
+    build:
+      context: ./coupon-service
+      dockerfile: Dockerfile
+    container_name: nexus-coupon-service
+    ports:
+      - "8109:8092"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nexus_coupons
+      SPRING_DATASOURCE_USERNAME: nexus_user
+      SPRING_DATASOURCE_PASSWORD: nexus_pass
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # Review Service
+  review-service:
+    build:
+      context: ./review-service
+      dockerfile: Dockerfile
+    container_name: nexus-review-service
+    ports:
+      - "8110:8093"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nexus_reviews
+      SPRING_DATASOURCE_USERNAME: nexus_user
+      SPRING_DATASOURCE_PASSWORD: nexus_pass
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # Analytics Service
+  analytics-service:
+    build:
+      context: ./analytics-service
+      dockerfile: Dockerfile
+    container_name: nexus-analytics-service
+    ports:
+      - "8111:8096"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      MONGODB_HOST: mongodb
+      MONGODB_USER: root
+      MONGODB_PASSWORD: example
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+      ELASTICSEARCH_URIS: http://elasticsearch:9200
+      ELASTICSEARCH_USER: elastic
+      ELASTICSEARCH_PASSWORD: changeme
+    depends_on:
+      mongodb:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      elasticsearch:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
+  # Admin Service
+  admin-service:
+    build:
+      context: ./admin-service
+      dockerfile: Dockerfile
+    container_name: nexus-admin-service
+    ports:
+      - "8112:8097"
+    environment:
+      SPRING_CONFIG_IMPORT: "optional:configserver:http://config-server:8888"
+      EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE: http://discovery-service:8761/eureka/
+      DB_HOST: postgres
+      DB_USERNAME: nexus_user
+      DB_PASSWORD: nexus_pass
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/nexus_admin
+      SPRING_DATA_REDIS_HOST: redis
+      SPRING_DATA_REDIS_PASSWORD: nexus_dev
+      SPRING_KAFKA_BOOTSTRAP_SERVERS: kafka:9092
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      kafka:
+        condition: service_healthy
+      discovery-service:
+        condition: service_healthy
+    networks:
+      - nexus-network
+
   # Elasticsearch
   elasticsearch:
     image: elasticsearch:8.11.0
