@@ -103,13 +103,13 @@ jobs:
           echo "### Service: ${{ matrix.service }} :rocket:" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "- Status: ${{ job.status }}" >> $GITHUB_STEP_SUMMARY
-          echo "- Coverage: 75% minimum enforced" >> $GITHUB_STEP_SUMMARY
+          echo "- Coverage: 70% minimum enforced" >> $GITHUB_STEP_SUMMARY
           echo "- Branch: backend" >> $GITHUB_STEP_SUMMARY
 
   integration-tests:
     needs: build-all-services
     runs-on: ubuntu-latest
-    
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -119,22 +119,24 @@ jobs:
         with:
           java-version: '17'
           distribution: 'temurin'
+          cache: 'maven'
 
       - name: Setup Docker Compose
         run: |
           cd nexus-backend-application
-          docker-compose up -d postgres mongodb redis kafka elasticsearch
+          # Use docker compose v2 (space instead of hyphen)
+          docker compose up -d postgres mongodb redis kafka elasticsearch
           echo "Waiting for infrastructure services to be healthy..."
           sleep 30
 
       - name: Run Integration Tests
         working-directory: nexus-backend-application
         run: |
-          mvn clean verify -pl integration-tests -am
+          mvn clean verify -Pintegration-tests
           echo "### Backend Integration Tests :white_check_mark:" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "All backend services built successfully!" >> $GITHUB_STEP_SUMMARY
-          echo "- Total Services: 24 (13 Core + 11 E-Commerce)" >> $GITHUB_STEP_SUMMARY
+          echo "- Total Services: 27 modules (25 business services + 2 infrastructure)" >> $GITHUB_STEP_SUMMARY
           echo "- Integration tests passed" >> $GITHUB_STEP_SUMMARY
           echo "- Ready to merge to master" >> $GITHUB_STEP_SUMMARY
 
@@ -150,7 +152,8 @@ jobs:
         if: always()
         run: |
           cd nexus-backend-application
-          docker-compose down -v
+          # Use docker compose v2 (space instead of hyphen)
+          docker compose down -v
 
   quality-gate:
     needs: [build-all-services, integration-tests]
