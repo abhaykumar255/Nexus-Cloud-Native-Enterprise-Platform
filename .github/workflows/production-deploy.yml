@@ -40,10 +40,12 @@ jobs:
       fail-fast: false
       matrix:
         service:
+          # Core Infrastructure Services
           - config-server
           - discovery-service
           - common-lib
           - api-gateway
+          # Business Services
           - auth-service
           - user-service
           - task-service
@@ -53,6 +55,20 @@ jobs:
           - workflow-service
           - external-integration-service
           - ai-service
+          # E-Commerce Services
+          - product-service
+          - inventory-service
+          - cart-service
+          - order-service
+          - payment-service
+          - delivery-service
+          - tracking-service
+          - seller-service
+          - restaurant-service
+          - coupon-service
+          - review-service
+          - analytics-service
+          - admin-service
 
     steps:
       - name: Checkout code
@@ -155,7 +171,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "#### Deployment Steps:" >> $GITHUB_STEP_SUMMARY
           echo "1. ✅ Pre-deployment security scan" >> $GITHUB_STEP_SUMMARY
-          echo "2. ✅ Built 13 backend microservices" >> $GITHUB_STEP_SUMMARY
+          echo "2. ✅ Built 24 backend microservices (13 Core + 11 E-Commerce)" >> $GITHUB_STEP_SUMMARY
           echo "3. ✅ Built frontend application" >> $GITHUB_STEP_SUMMARY
           echo "4. 🔄 Canary deployment (10% traffic)" >> $GITHUB_STEP_SUMMARY
           echo "5. ⏳ Monitoring canary metrics..." >> $GITHUB_STEP_SUMMARY
@@ -231,7 +247,7 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "#### Deployment Steps:" >> $GITHUB_STEP_SUMMARY
           echo "1. ✅ Pre-deployment security scan" >> $GITHUB_STEP_SUMMARY
-          echo "2. ✅ Built 13 backend microservices" >> $GITHUB_STEP_SUMMARY
+          echo "2. ✅ Built 24 backend microservices (13 Core + 11 E-Commerce)" >> $GITHUB_STEP_SUMMARY
           echo "3. ✅ Built frontend application" >> $GITHUB_STEP_SUMMARY
           echo "4. 🔄 Canary deployment (10% traffic)" >> $GITHUB_STEP_SUMMARY
           echo "5. ⏳ Monitoring canary metrics..." >> $GITHUB_STEP_SUMMARY

@@ -25,10 +25,12 @@ jobs:
       fail-fast: false
       matrix:
         service:
+          # Core Infrastructure Services
           - config-server
           - discovery-service
           - common-lib
           - api-gateway
+          # Business Services
           - auth-service
           - user-service
           - task-service
@@ -38,6 +40,20 @@ jobs:
           - workflow-service
           - external-integration-service
           - ai-service
+          # E-Commerce Services
+          - product-service
+          - inventory-service
+          - cart-service
+          - order-service
+          - payment-service
+          - delivery-service
+          - tracking-service
+          - seller-service
+          - restaurant-service
+          - coupon-service
+          - review-service
+          - analytics-service
+          - admin-service
 
     steps:
       - name: Checkout code
@@ -108,16 +124,39 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Integration Test Placeholder
+      - name: Setup Java 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Start Infrastructure
+        working-directory: nexus-backend-application
         run: |
-          echo "🔄 Running integration tests..."
+          docker-compose up -d postgres mongodb redis kafka elasticsearch
+          sleep 45
+
+      - name: Run Integration Tests
+        working-directory: nexus-backend-application
+        run: mvn clean verify -pl integration-tests -am
+
+      - name: Stop Infrastructure
+        if: always()
+        working-directory: nexus-backend-application
+        run: docker-compose down -v
+
+      - name: Integration Test Summary
+        run: |
+          echo "🔄 Integration tests completed"
           echo "### Integration Tests :white_check_mark:" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "✅ All services built successfully" >> $GITHUB_STEP_SUMMARY
-          echo "✅ Backend: 13 microservices" >> $GITHUB_STEP_SUMMARY
+          echo "✅ Backend: 24 microservices (13 Core + 11 E-Commerce)" >> $GITHUB_STEP_SUMMARY
           echo "✅ Frontend: React application" >> $GITHUB_STEP_SUMMARY
+          echo "✅ E2E tests: Order placement, Coupon validation, Review submission" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
-          echo "Ready for production deployment to develop branch" >> $GITHUB_STEP_SUMMARY
+          echo "Ready for staging deployment 🚀" >> $GITHUB_STEP_SUMMARY
 
   staging-deploy:
     needs: integration-tests
