@@ -106,15 +106,18 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '20'
-          cache: 'npm'
-          cache-dependency-path: nexus-frontend-application/package-lock.json
 
       - name: Install & Build Production
         working-directory: nexus-frontend-application
         env:
           NODE_ENV: production
         run: |
-          if [ -f package-lock.json ]; then
+          if [ -f yarn.lock ]; then
+            echo "📦 Using Yarn..."
+            yarn install --frozen-lockfile
+            yarn build || echo "Build not configured"
+          elif [ -f package-lock.json ]; then
+            echo "📦 Using npm..."
             npm ci
             npm run build || echo "Build not configured"
           fi
