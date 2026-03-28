@@ -43,4 +43,7 @@ elasticsearch:
     tasks: nexus-tasks
     users: nexus-users
     files: nexus-files
+    products: nexus-products
+    restaurants: nexus-restaurants
+    sellers: nexus-sellers
 
